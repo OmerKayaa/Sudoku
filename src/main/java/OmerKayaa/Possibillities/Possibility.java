@@ -1,21 +1,22 @@
 package OmerKayaa.Possibillities;
 
+import OmerKayaa.Interfaceses.Statics;
+
 public abstract class Possibility
 {
-	public abstract boolean[] getPossibility();
-	public abstract void decreaseCount();
-	public abstract byte getCount();
+	final boolean[] PossibleValues = Statics.TrueArrayBoolean ();
+	byte PossibleValueCount = 9;
+	
 	public abstract void setValue(int number);
 	
 	public void earsePossibility(int number)
 	{
-		boolean[] poss = getPossibility ();
-		poss [number] = false; decreaseCount ();
-		if(getCount ()==1)
+		PossibleValues [number] = false; PossibleValueCount--;
+		if(PossibleValueCount ==1)
 		{
 			for ( byte i = 0 ; i < 9 ; i++ )
 			{
-				if(poss[i]) setValue ( i );
+				if(PossibleValues[i]) setValue ( i );
 			}
 		}
 	}
