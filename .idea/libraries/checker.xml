@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="checker">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../Kütüphaneler/CeckerFramework/checker-framework-2.5.1/checker/dist/checker.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
