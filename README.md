@@ -1,0 +1,3 @@
+# Sudoku
+Sudoku Solver
+This project is my 2nd grade project not so usefull but works...
