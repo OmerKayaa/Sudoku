@@ -8,12 +8,8 @@ public class Square extends Container
 {
 	public Square( ArrayReceiver receiver , int location )
 	{
-		super ( receiver , location );
-	}
-	
-	@Override
-	SimpleCell getCells ( int i )
-	{
-		return Statics.vectoralConverter ( Location,i, Receiver::cellReceiver );
+		super (location );
+		Receiver = i -> Statics.vectoralConverter ( Location,i, receiver::cellReceiver ) ;
 	}
 }
+

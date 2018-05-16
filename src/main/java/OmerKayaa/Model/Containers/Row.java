@@ -7,13 +7,7 @@ public class Row extends Container
 {
 	public Row ( ArrayReceiver receiver , int location )
 	{
-		super(receiver , location);
+		super(location);
+		Receiver = i -> receiver.cellReceiver ( location, i );
 	}
-	
-	@Override
-	SimpleCell getCells ( int i )
-	{
-		return this.Receiver.cellReceiver ( this.Location , i );
-	}
-	
 }

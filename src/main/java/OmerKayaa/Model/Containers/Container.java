@@ -1,39 +1,16 @@
 package OmerKayaa.Model.Containers;
 
-import OmerKayaa.Interfaceses.ArrayReceiver;
 import OmerKayaa.Model.SimpleCell;
-import OmerKayaa.Interfaceses.Statics;
 import OmerKayaa.Possibillities.Possibility;
 
-public abstract class Container extends Possibility
+public class Container extends Possibility
 {
-	final boolean[] PossibleValues = Statics.TrueArrayBoolean ();
-	protected final ArrayReceiver Receiver;
-	byte PossibleValueCount = 9;
-	int iteratorCount = 0;
-	final int Location;
+	protected GetCellFromContainer Receiver;
+	protected final int Location;
 	
-	public Container ( ArrayReceiver receiver , int location )
+	public Container (int location )
 	{
-		Receiver = receiver; Location = ( byte ) location;
-	}
-	
-	@Override
-	public boolean[] getPossibility ()
-	{
-		return PossibleValues;
-	}
-	
-	@Override
-	public void decreaseCount ()
-	{
-		PossibleValueCount--;
-	}
-	
-	@Override
-	public byte getCount ()
-	{
-		return PossibleValueCount;
+		Location = ( byte ) location;
 	}
 	
 	@Override
@@ -50,10 +27,18 @@ public abstract class Container extends Possibility
 		}
 	}
 	
-	abstract SimpleCell getCells ( int i );
+	SimpleCell getCells ( int i )
+	{
+		return Receiver.getCells ( i );
+	}
 	
 	interface Consumer<T>
 	{
 		boolean accept(T t);
+	}
+	
+	interface GetCellFromContainer
+	{
+		SimpleCell getCells ( int i );
 	}
 }
