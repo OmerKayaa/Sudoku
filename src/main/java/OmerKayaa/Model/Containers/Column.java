@@ -8,6 +8,6 @@ public class Column extends Container
 	public Column ( ArrayReceiver receiver , int location )
 	{
 		super(location);
-		Receiver = i -> receiver.cellReceiver ( i, location );
+		Receiver = i -> receiver.cellReceiver ( location , i );
 	}
 }

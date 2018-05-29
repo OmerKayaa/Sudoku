@@ -14,7 +14,7 @@ public class Container extends Possibility
 	}
 	
 	@Override
-	public void setValue(int number)
+	protected void setValue(int number)
 	{
 		forEach ( Cell -> {if(Cell.getValue () == 0) {setValue ( number ); return true;} else return false;} );
 	}
@@ -27,17 +27,17 @@ public class Container extends Possibility
 		}
 	}
 	
-	SimpleCell getCells ( int i )
+	public SimpleCell getCells ( int i )
 	{
 		return Receiver.getCells ( i );
 	}
 	
-	interface Consumer<T>
+	public interface Consumer<T>
 	{
 		boolean accept(T t);
 	}
 	
-	interface GetCellFromContainer
+	protected interface GetCellFromContainer
 	{
 		SimpleCell getCells ( int i );
 	}

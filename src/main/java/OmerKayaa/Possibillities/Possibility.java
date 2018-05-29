@@ -1,7 +1,5 @@
 package OmerKayaa.Possibillities;
 
-import OmerKayaa.Interfaceses.Statics;
-
 public abstract class Possibility
 {
 	final boolean[] PossibleValues;
@@ -10,17 +8,17 @@ public abstract class Possibility
 	public Possibility (int value)
 	{
 		setValue ( value );
-		PossibleValues = Statics.FalseArrayBoolean ();
+		PossibleValues = FalseArrayBoolean ();
 		PossibleValueCount = 0;
 	}
 	
 	public Possibility()
 	{
-		PossibleValues = Statics.TrueArrayBoolean ();
+		PossibleValues = TrueArrayBoolean ();
 		PossibleValueCount = 9;
 	}
 	
-	public abstract void setValue(int number);
+	protected abstract void setValue(int number);
 	
 	public void earsePossibility(int number)
 	{
@@ -32,5 +30,15 @@ public abstract class Possibility
 				if(PossibleValues[i]) setValue ( i );
 			}
 		}
+	}
+	
+	static boolean[] TrueArrayBoolean ()
+	{
+		return new boolean[] { true , true , true , true , true , true , true , true , true };
+	}
+	
+	static boolean[] FalseArrayBoolean ()
+	{
+		return new boolean[] { false , false , false , false , false , false , false , false , false };
 	}
 }

@@ -1,7 +1,6 @@
 package OmerKayaa.Model;
 
 import OmerKayaa.Interfaceses.CloneAble;
-import OmerKayaa.Interfaceses.Statics;
 import OmerKayaa.Possibillities.Possibility;
 
 public class SimpleCell extends Possibility implements CloneAble<SimpleCell>
@@ -35,5 +34,11 @@ public class SimpleCell extends Possibility implements CloneAble<SimpleCell>
 	public SimpleCell Clone ()
 	{
 		return Value == 0 ? new SimpleCell ( LocationX , LocationY ) :new SimpleCell ( Value , LocationX , LocationY );
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "x:"+LocationX + " y:" + LocationY + " Value:" + Value;
 	}
 }

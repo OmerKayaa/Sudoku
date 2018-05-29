@@ -8,6 +8,6 @@ public class Row extends Container
 	public Row ( ArrayReceiver receiver , int location )
 	{
 		super(location);
-		Receiver = i -> receiver.cellReceiver ( location, i );
+		Receiver = i -> receiver.cellReceiver ( i , location );
 	}
 }
