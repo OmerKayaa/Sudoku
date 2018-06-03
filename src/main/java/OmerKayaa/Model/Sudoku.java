@@ -2,6 +2,7 @@ package OmerKayaa.Model;
 
 import OmerKayaa.Interfaceses.ArrayReceiver;
 import OmerKayaa.Interfaceses.CloneAble;
+import OmerKayaa.Interfaceses.Consumer;
 import OmerKayaa.Model.Containers.Column;
 import OmerKayaa.Model.Containers.Container;
 import OmerKayaa.Model.Containers.Row;
@@ -27,10 +28,25 @@ public class Sudoku implements CloneAble<Sudoku>
 			Squares [i] = new Square ( receiver , i  );
 		}
 	}
+
+	public void forEachContainer( Consumer<Container> consumer )
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			if (consumer.accept(Columns[i])) break;
+			if (consumer.accept(Squares[i])) break;
+			if (consumer.accept(Rows[i])) break;
+		}
+	}
 	
 	public SimpleCell getCells (int x,int y)
 	{
 		return Cells[y][x];
+	}
+
+	public ArrayReceiver getReciver()
+	{
+		return (x, y) -> getCells(x,y);
 	}
 	
 	public Container getColumns (int number)

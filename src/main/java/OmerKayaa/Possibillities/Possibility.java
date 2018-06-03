@@ -7,9 +7,18 @@ public abstract class Possibility
 	
 	public Possibility (int value)
 	{
-		setValue ( value );
-		PossibleValues = FalseArrayBoolean ();
-		PossibleValueCount = 0;
+		if(value == 0)
+		{
+			PossibleValues = TrueArrayBoolean ();
+			PossibleValueCount = 9;
+
+		}
+		else
+		{
+			setValue(value);
+			PossibleValues = FalseArrayBoolean();
+			PossibleValueCount = 0;
+		}
 	}
 	
 	public Possibility()
@@ -20,14 +29,18 @@ public abstract class Possibility
 	
 	protected abstract void setValue(int number);
 	
-	public void earsePossibility(int number)
+	public void erasePossibility (int number)
 	{
-		PossibleValues [number] = false; PossibleValueCount--;
-		if(PossibleValueCount ==1)
+		if(PossibleValueCount!=0)
 		{
-			for ( byte i = 0 ; i < 9 ; i++ )
+			PossibleValues[--number] = false;
+			PossibleValueCount--;
+			if(PossibleValueCount ==1)
 			{
-				if(PossibleValues[i]) setValue ( i );
+				for ( byte i = 0 ; i < 9 ; i++ )
+				{
+					if(PossibleValues[i]) setValue ( i+1 );
+				}
 			}
 		}
 	}

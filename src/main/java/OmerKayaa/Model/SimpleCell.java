@@ -27,7 +27,7 @@ public class SimpleCell extends Possibility implements CloneAble<SimpleCell>
 	@Override
 	public void setValue ( int value )
 	{
-		Value = ( byte ) value;
+		Value = ( byte ) (value);
 	}
 	
 	@Override

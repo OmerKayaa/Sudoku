@@ -1,5 +1,6 @@
 package OmerKayaa.Display;
 
+import OmerKayaa.Interfaceses.ArrayReceiver;
 import OmerKayaa.Interfaceses.Converter;
 import OmerKayaa.Interfaceses.Solution;
 import OmerKayaa.Model.SimpleCell;
@@ -103,8 +104,23 @@ public class Panel extends Application implements Runnable
 		}
 		
 		DataStore data = new DataStore ( sudokuArray );
-		
-		Solution.findSolution (new Sudoku ((x , y ) -> new SimpleCell (data.SudokuArray[y][x], x , y ) ) );
+
+		setText(Solution.findSolution(new Sudoku ((x , y ) ->
+										new SimpleCell (data.SudokuArray[y][x], x , y ) ) ).getReciver());
+
+	}
+
+	private void setText(ArrayReceiver r)
+	{
+		for (int i = 0; i < 9 ; i++)
+		{
+			for (int j = 0; j < 9 ; j++)
+			{
+				Converter.CartesianConverter( j , i , (a, b) -> Cells[a][b])
+						.setText(String.valueOf(r.cellReceiver(j,i).getValue()));
+				Cells[i][j].setDisable(true);
+			}
+		}
 	}
 	
 	private void reset()

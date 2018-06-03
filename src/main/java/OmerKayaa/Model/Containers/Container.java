@@ -2,13 +2,14 @@ package OmerKayaa.Model.Containers;
 
 import OmerKayaa.Model.SimpleCell;
 import OmerKayaa.Possibillities.Possibility;
+import OmerKayaa.Interfaceses.Consumer;
 
 public class Container extends Possibility
 {
 	protected GetCellFromContainer Receiver;
 	protected final int Location;
 	
-	public Container (int location )
+	protected Container (int location )
 	{
 		Location = ( byte ) location;
 	}
@@ -18,7 +19,7 @@ public class Container extends Possibility
 	{
 		forEach ( Cell -> {if(Cell.getValue () == 0) {setValue ( number ); return true;} else return false;} );
 	}
-	
+
 	public void forEach ( Consumer<SimpleCell> action )
 	{
 		for ( int i = 0 ; i < 9 ; i++ )
@@ -30,11 +31,6 @@ public class Container extends Possibility
 	public SimpleCell getCells ( int i )
 	{
 		return Receiver.getCells ( i );
-	}
-	
-	public interface Consumer<T>
-	{
-		boolean accept(T t);
 	}
 	
 	protected interface GetCellFromContainer

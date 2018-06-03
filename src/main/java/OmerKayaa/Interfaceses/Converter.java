@@ -7,15 +7,15 @@ package OmerKayaa.Interfaceses;
  *          <li>
  *              Cartesian: normal cartesian location system
  *              0.0 - > 1.0 -> 2.0 -> 3.0 ..... 9.0
- *              v - - - - - - - - - - - - - - - - ^
+ *              v - - - - - - - - - - - - - - - - <
  *              0.1 - > 1.1 -> 2.1 -> 3.1 ..... 9.1
  *          </li>
  *          <li>
  *              Square: square location system
  *              0.0 -> 0.1 -> 0.2 > 1.0 -> 1.1 -> 1.2       0 | 1 | 2
- *              v - - - - - - - ^ | v - - - - - - - ^       ---------
+ *              v - - - - - - - < | v - - - - - - - <       ---------
  *              0.3 -> 0.4 -> 0.5 | 1.3 -> 1.4 -> 1.5       3 | 4 | 5
- *              v - - - - - - - ^ | v - - - - - - - ^       ----------
+ *              v - - - - - - - < | v - - - - - - - <       ----------
  *              0.6 -> 0.7 -> 0.7 ^                         6 | 7 | 8
  *          </li>
  *      </ol>
@@ -55,6 +55,7 @@ public interface Converter<Type>
 	 * @param y         cartesian system y
 	 * @param accept    interface for passing conversion result
 	 * @param <Type>    any desired return type can be used
+	 * @see				for example see Display/Panel.setText
 	 * @return
 	 */
 	static <Type> Type CartesianConverter ( int x , int y , Consumer<Type> accept )
