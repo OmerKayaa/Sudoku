@@ -1,13 +1,13 @@
 package OmerKayaa.Model.Containers;
 
-import OmerKayaa.Interfaceses.ArrayReceiver;
+import OmerKayaa.Interfaceses.CellReceiver;
 import OmerKayaa.Interfaceses.Converter;
 
 public class Square extends Container
 {
-	public Square( ArrayReceiver receiver , int location )
+	public Square(CellReceiver receiver , int location )
 	{
-		super (location );
-		Receiver = i -> Converter.ContainerConverter ( Location, i, ( x , y ) -> receiver.cellReceiver ( x , y ) ) ;
+		super (location , i -> Converter.ContainerConverter ( location, i, ( x , y ) -> receiver.receiver ( x , y
+		) ) );
 	}
 }

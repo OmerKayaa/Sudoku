@@ -1,13 +1,11 @@
 package OmerKayaa.Model.Containers;
 
-import OmerKayaa.Interfaceses.ArrayReceiver;
-import OmerKayaa.Model.SimpleCell;
+import OmerKayaa.Interfaceses.CellReceiver;
 
 public class Row extends Container
 {
-	public Row ( ArrayReceiver receiver , int location )
+	public Row (CellReceiver receiver , int location )
 	{
-		super(location);
-		Receiver = i -> receiver.cellReceiver ( i , location );
+		super(location, i -> receiver.receiver ( i , location ) );
 	}
 }

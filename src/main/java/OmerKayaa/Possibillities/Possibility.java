@@ -2,56 +2,93 @@ package OmerKayaa.Possibillities;
 
 public abstract class Possibility
 {
-	final boolean[] PossibleValues;
+	short PossibleValues;
 	byte PossibleValueCount;
 	
 	public Possibility (int value)
 	{
 		if(value == 0)
 		{
-			PossibleValues = TrueArrayBoolean ();
+			PossibleValues = nineBitOf1();
 			PossibleValueCount = 9;
-
 		}
 		else
 		{
-			setValue(value);
-			PossibleValues = FalseArrayBoolean();
+			PossibleValues = nineBitOf0();
 			PossibleValueCount = 0;
 		}
 	}
-	
+
 	public Possibility()
 	{
-		PossibleValues = TrueArrayBoolean ();
+		PossibleValues = nineBitOf1();
 		PossibleValueCount = 9;
 	}
-	
-	protected abstract void setValue(int number);
-	
-	public void erasePossibility (int number)
+
+	public short getPossibleValues()
 	{
-		if(PossibleValueCount!=0)
+		return PossibleValues;
+	}
+
+	protected abstract void setValue(byte number);
+	
+	public void erasePossibility (byte number)
+	{
+		if(getBit(number))
 		{
-			PossibleValues[--number] = false;
+			setBitToFalse(number);
 			PossibleValueCount--;
-			if(PossibleValueCount ==1)
-			{
-				for ( byte i = 0 ; i < 9 ; i++ )
-				{
-					if(PossibleValues[i]) setValue ( i+1 );
-				}
-			}
 		}
 	}
-	
-	static boolean[] TrueArrayBoolean ()
+
+	public boolean checkForOneMissingValueSolution ()
 	{
-		return new boolean[] { true , true , true , true , true , true , true , true , true };
+		if (PossibleValueCount == 1)
+		{
+			setValue(findTheBit());
+			return true;
+		}
+		return false;
+	}
+
+	private void setBitToFalse(byte number)
+	{
+		PossibleValues &=~(1 << number-1);
+	}
+
+	public boolean getBit(byte number)
+	{
+		return (PossibleValues & 1 << number-1) != 0 ;
+	}
+
+	private byte findTheBit()
+	{
+		byte pointer = 8;
+		for (byte i = 4; i >= 1 ; i/=2 )
+		{
+			if(PossibleValues == 1 << pointer-1 )
+			{
+				break;
+			}
+			else if(PossibleValues < 1 << pointer-1 )
+			{
+				pointer-=i;
+			}
+			else
+			{
+				pointer+=i;
+			}
+		}
+		return pointer;
 	}
 	
-	static boolean[] FalseArrayBoolean ()
+	static short nineBitOf1 ()
 	{
-		return new boolean[] { false , false , false , false , false , false , false , false , false };
+		return 0b111111111;
+	}
+
+	static short nineBitOf0 ()
+	{
+		return 0;
 	}
 }

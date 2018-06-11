@@ -1,9 +1,10 @@
 package OmerKayaa;
 
 import OmerKayaa.Interfaceses.Converter;
+import OmerKayaa.Interfaceses.PointReceiver;
 import OmerKayaa.Interfaceses.Solution;
-import OmerKayaa.Model.Containers.Container;
-import OmerKayaa.Model.SimpleCell;
+import OmerKayaa.Interfaceses.Traveler;
+import OmerKayaa.Model.Containers.ContainerType;
 import OmerKayaa.Model.Sudoku;
 import junit.framework.TestCase;
 import org.junit.Assert;
@@ -12,7 +13,7 @@ import org.junit.Test;
 public class SudokuSolutionTester extends TestCase
 {
     int[][] unSolvedSudoku, solvedSudoku, oneMissingElement;
-    Sudoku ExperimentOnUnsolved,ExperimentOnSolved,ExperimentOnOneMissing;
+    Sudoku ExperimentOnUnsolved, ExperimentOnSolved, ExperimentOnOneMissing;
 
     public void setUp ()
     {
@@ -60,57 +61,24 @@ public class SudokuSolutionTester extends TestCase
                         {3, 4, 5, 2, 8, 6, 1, 7, 9}
                 };
 
-        SimpleCell[][] arr = new SimpleCell[9][9];
-
-        Traveller(new voidTraveller()
-                  {
-                      @Override public void f4 (int j, int i)
-                      {
-                          arr[i][j] = new SimpleCell(unSolvedSudoku[i][j], j, i);
-                      }
-                  }
-        );
-
-        ExperimentOnUnsolved = new Sudoku((x, y) -> arr[y][x]);
-
-        SimpleCell[][] arr1 = new SimpleCell[9][9];
-
-        Traveller(new voidTraveller()
-                  {
-                      @Override public void f4 (int j, int i)
-                      {
-                          arr1[i][j] = new SimpleCell(solvedSudoku[i][j], j, i);
-                      }
-                  }
-        );
-
-        ExperimentOnSolved = new Sudoku((x, y) -> arr1[y][x]);
-
-        SimpleCell[][] arr2 = new SimpleCell[9][9];
-
-        Traveller(new voidTraveller()
-                  {
-                      @Override public void f4 (int j, int i)
-                      {
-                          arr2[i][j] = new SimpleCell(oneMissingElement[i][j], j, i);
-                      }
-                  }
-        );
-
-        ExperimentOnOneMissing = new Sudoku((x, y) -> arr2[y][x]);
+        ExperimentOnUnsolved = new Sudoku((PointReceiver) (x, y) -> unSolvedSudoku[y][x]);
+        ExperimentOnSolved = new Sudoku((PointReceiver) (x, y) -> solvedSudoku[y][x]);
+        ExperimentOnOneMissing = new Sudoku((PointReceiver) (x, y) -> oneMissingElement[y][x]);
     }
 
     @Test
     public void testSolution ()
     {
         Solution.findSolution(ExperimentOnUnsolved);
-        Traveller(new voidTraveller()
-                  {
-                      @Override public void f4 (int j, int i)
-                      {
-                          Assert.assertEquals(ExperimentOnUnsolved.getCells(j, i).getValue(), solvedSudoku[i][j]);
-                      }
-                  }
+
+        Traveler.Traveler(new Traveler.voidTraveler()
+                          {
+                              @Override public void f4 (int j, int i)
+                              {
+                                  Assert.assertEquals(ExperimentOnUnsolved.getCells(j, i).getValue(),
+                                                      solvedSudoku[i][j]);
+                              }
+                          }
         );
     }
 
@@ -124,39 +92,13 @@ public class SudokuSolutionTester extends TestCase
     }
 
     @Test
-    public void testErasingShouldWork ()
-    {
-        Container container = ExperimentOnOneMissing.getColumns(0);
-        container.forEach(cell ->
-                          {
-                              if (cell.getValue() != 0)
-                              {
-                                  container.forEach(simpleCell ->
-                                                    {
-                                                        simpleCell.erasePossibility(cell.getValue());
-                                                        return false;
-                                                    });
-                                  container.erasePossibility(cell.getValue());
-                              }
-                              return false;
-                          }
-        );
-        for ( int i = 0; i < 9; i++ )
-        {
-            assertEquals(container.getCells(i).getValue(), solvedSudoku[i][0]);
-        }
-    }
-
-    @Test
     public void testLocationShouldBeRight ()
     {
-        Sudoku Experiment = new Sudoku((x, y) -> new SimpleCell(solvedSudoku[y][x], x, y));
-
         for ( int i = 0; i < 9; i++ )
         {
             for ( int j = 0; j < 9; j++ )
             {
-                Assert.assertEquals(Experiment.getCells(j, i).getValue(), solvedSudoku[i][j]);
+                Assert.assertEquals(ExperimentOnSolved.getCells(j, i).getValue(), solvedSudoku[i][j]);
             }
         }
 
@@ -166,9 +108,11 @@ public class SudokuSolutionTester extends TestCase
         {
             for ( int j = 0; j < 9; j++ )
             {
-                Assert.assertEquals(Experiment.getColumns(i).getCells(j).getValue(), solvedSudoku[j][i]);
-                Assert.assertEquals(Experiment.getRows(i).getCells(j).getValue(), solvedSudoku[i][j]);
-                Assert.assertEquals(Experiment.getSquares(i).getCells(j).getValue(),
+                Assert.assertEquals(ExperimentOnSolved.getContainer(ContainerType.Column, i).getCells(j).getValue(),
+                                    solvedSudoku[j][i]);
+                Assert.assertEquals(ExperimentOnSolved.getContainer(ContainerType.Row, i).getCells(j).getValue(),
+                                    solvedSudoku[i][j]);
+                Assert.assertEquals(ExperimentOnSolved.getContainer(ContainerType.Square, i).getCells(j).getValue(),
                                     (int) (Converter.ContainerConverter(i, j, (a, b) -> solvedSudoku[b][a])));
             }
         }
@@ -176,90 +120,34 @@ public class SudokuSolutionTester extends TestCase
         System.out.println("Sudoku.getContainers works fine");
     }
 
-    public static void Traveller (Traveller t)
+    @Test
+    public void testMultiContainerErasingShouldWork ()
     {
-        for ( int i = 0; i < 3; i++ )
+        ExperimentOnUnsolved.forEachContainer(container ->
         {
-            t.f1(i);
-            for ( int j = 0; j < 3; j++ )
+            container.forEachCell(cell ->
             {
-                t.f2(i * 3 + j);
-                for ( int k = 0; k < 3; k++ )
+                if (cell.getValue() != 0)
                 {
-                    t.f3(k, i * 3 + j);
-                    for ( int l = 0; l < 3; l++ )
+                    container.forEachCell(simpleCell ->
                     {
-                        t.f4(k * 3 + l, i * 3 + j);
-                    }
-                    t.ef3(k, i * 3 + j);
+                        simpleCell.erasePossibility(cell.getValue());
+                        return false;
+                    });
+                    container.erasePossibility(cell.getValue());
                 }
-                t.ef2(i * 3 + j);
-            }
-            t.ef1(i);
-        }
+                return false;
+            });
+            return container.checkForOneMissingValueSolution();
+        });
+        System.out.println(ExperimentOnUnsolved.getCells(1, 1).getPossibleValues());
     }
 
-    interface Traveller
+    @Test
+    public void testPossibilities ()
     {
-        void f1 (int i);
-
-        void f2 (int j);
-
-        void f3 (int k, int j);
-
-        void f4 (int l, int i);
-
-        void ef1 (int i);
-
-        void ef2 (int j);
-
-        void ef3 (int k, int j);
+        Solution.findSolution(ExperimentOnUnsolved);
+        Assert.assertEquals(ExperimentOnUnsolved.getCells(1, 1).getPossibleValues() , 74);
     }
 
-    class voidTraveller implements Traveller
-    {
-        @Override public void f1 (int i) {}
-
-        @Override public void f2 (int j) {}
-
-        @Override public void f3 (int k, int j) {}
-
-        @Override public void f4 (int j, int i) {}
-
-        @Override public void ef1 (int i) {}
-
-        @Override public void ef2 (int j) {}
-
-        @Override public void ef3 (int k, int j) {}
-    }
-
-    class printer extends voidTraveller
-    {
-        final int[][] array;
-
-        printer (int array[][])
-        {
-            this.array = array;
-        }
-
-        @Override public void f4 (int l, int i)
-        {
-            System.out.print(array[i][l] + " ");
-        }
-
-        @Override public void ef3 (int k, int j)
-        {
-            System.out.print("  ");
-        }
-
-        @Override public void ef2 (int j)
-        {
-            System.out.println();
-        }
-
-        @Override public void ef1 (int i)
-        {
-            System.out.println();
-        }
-    }
 }

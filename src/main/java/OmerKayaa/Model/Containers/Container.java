@@ -6,26 +6,42 @@ import OmerKayaa.Interfaceses.Consumer;
 
 public class Container extends Possibility
 {
-	protected GetCellFromContainer Receiver;
-	protected final int Location;
+	private final GetCellFromContainer Receiver;
+	private final int Location;
+	private short a=0,b=0;
 	
-	protected Container (int location )
+	protected Container (int location , GetCellFromContainer receiver)
 	{
 		Location = ( byte ) location;
+		Receiver = receiver;
 	}
 	
 	@Override
-	protected void setValue(int number)
+	public void setValue(byte number)
 	{
-		forEach ( Cell -> {if(Cell.getValue () == 0) {setValue ( number ); return true;} else return false;} );
+		forEachCell(Cell -> {if(Cell.getValue () == 0 && Cell.getBit(number) )
+		{Cell.setValue (number ); return true;} else return
+				false;} );
 	}
 
-	public void forEach ( Consumer<SimpleCell> action )
+	public void forEachCell (Consumer<SimpleCell> action )
 	{
 		for ( int i = 0 ; i < 9 ; i++ )
 		{
 			if(action.accept ( getCells ( i ))) return;
 		}
+	}
+
+	public short checkOnePossibleSolution()
+	{
+		a=b=0;
+		forEachCell(cell ->
+		{
+			a = (short) ((~(a | b) & cell.getPossibleValues())|((a & b) &~ (cell.getPossibleValues())));
+			b |= cell.getPossibleValues();
+			return false;
+		});
+		return a;
 	}
 	
 	public SimpleCell getCells ( int i )

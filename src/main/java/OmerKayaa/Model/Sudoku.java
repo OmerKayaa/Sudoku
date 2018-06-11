@@ -1,12 +1,7 @@
 package OmerKayaa.Model;
 
-import OmerKayaa.Interfaceses.ArrayReceiver;
-import OmerKayaa.Interfaceses.CloneAble;
-import OmerKayaa.Interfaceses.Consumer;
-import OmerKayaa.Model.Containers.Column;
-import OmerKayaa.Model.Containers.Container;
-import OmerKayaa.Model.Containers.Row;
-import OmerKayaa.Model.Containers.Square;
+import OmerKayaa.Interfaceses.*;
+import OmerKayaa.Model.Containers.*;
 
 public class Sudoku implements CloneAble<Sudoku>
 {
@@ -15,13 +10,28 @@ public class Sudoku implements CloneAble<Sudoku>
 	private Container [] Squares = new Square[9];
 	private Container [] Rows = new Row[9];
 	
-	public Sudoku ( ArrayReceiver receiver )
+	public Sudoku ( PointReceiver receiver )
 	{
 		for ( int i = 0 ; i < 9 ; i++ )
 		{
 			for ( int j = 0 ; j < 9 ; j++ )
 			{
-				Cells[i][j] = receiver.cellReceiver ( j, i );
+				Cells[i][j] = new SimpleCell
+						(receiver.receiver ( j, i ) , j , i , this::getContainer);
+			}
+			Columns [i] = new Column ( (x, y) -> Cells[y][x] , i  );
+			Rows    [i] = new Row ( (x, y) -> Cells[y][x] , i  );
+			Squares [i] = new Square ( (x, y) -> Cells[y][x] , i  );
+		}
+	}
+
+	public Sudoku ( CellReceiver receiver )
+	{
+		for ( int i = 0 ; i < 9 ; i++ )
+		{
+			for ( int j = 0 ; j < 9 ; j++ )
+			{
+				Cells[i][j] = receiver.receiver(j,i);
 			}
 			Columns [i] = new Column ( receiver , i  );
 			Rows    [i] = new Row ( receiver , i  );
@@ -29,14 +39,16 @@ public class Sudoku implements CloneAble<Sudoku>
 		}
 	}
 
-	public void forEachContainer( Consumer<Container> consumer )
+	public boolean forEachContainer( Consumer<Container> consumer )
 	{
+		boolean changed=false;
 		for (int i = 0; i < 9; i++)
 		{
-			if (consumer.accept(Columns[i])) break;
-			if (consumer.accept(Squares[i])) break;
-			if (consumer.accept(Rows[i])) break;
+			changed |= consumer.accept(Columns[i]);
+			changed |= consumer.accept(Squares[i]);
+			changed |= consumer.accept(Rows[i]);
 		}
+		return changed;
 	}
 	
 	public SimpleCell getCells (int x,int y)
@@ -44,24 +56,25 @@ public class Sudoku implements CloneAble<Sudoku>
 		return Cells[y][x];
 	}
 
-	public ArrayReceiver getReciver()
+	public CellReceiver getCellReceiver ()
 	{
 		return (x, y) -> getCells(x,y);
 	}
-	
-	public Container getColumns (int number)
+
+	public PointReceiver getPointReceiver ()
 	{
-		return Columns[number];
+		return (x, y) -> getCells(x,y).getValue();
 	}
 	
-	public Container getSquares (int number)
+	public Container getContainer (ContainerType type , int number)
 	{
-		return Squares[number];
-	}
-	
-	public Container getRows (int number)
-	{
-		return Rows[number];
+		if(type == ContainerType.Square)
+			return Squares[number];
+		else if(type == ContainerType.Column)
+			return Columns[number];
+		else if(type == ContainerType.Row)
+			return Rows[number];
+		else return null;
 	}
 	
 	/**
@@ -73,6 +86,6 @@ public class Sudoku implements CloneAble<Sudoku>
 	@Override
 	public Sudoku Clone ()
 	{
-		return new Sudoku ( ( x , y ) -> Cells[y][x].Clone () );
+		return  new Sudoku ( (CellReceiver) ( x , y ) -> Cells[y][x]);
 	}
 }

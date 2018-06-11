@@ -1,9 +1,9 @@
 package OmerKayaa.Display;
 
-import OmerKayaa.Interfaceses.ArrayReceiver;
+import OmerKayaa.Interfaceses.CellReceiver;
 import OmerKayaa.Interfaceses.Converter;
+import OmerKayaa.Interfaceses.PointReceiver;
 import OmerKayaa.Interfaceses.Solution;
-import OmerKayaa.Model.SimpleCell;
 import OmerKayaa.Model.Sudoku;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -105,19 +105,19 @@ public class Panel extends Application implements Runnable
 		
 		DataStore data = new DataStore ( sudokuArray );
 
-		setText(Solution.findSolution(new Sudoku ((x , y ) ->
-										new SimpleCell (data.SudokuArray[y][x], x , y ) ) ).getReciver());
+		setText(Solution.findSolution(new Sudoku ((PointReceiver) (x , y ) ->
+										data.SudokuArray[y][x] ) ).getPointReceiver() );
 
 	}
 
-	private void setText(ArrayReceiver r)
+	private void setText(PointReceiver r)
 	{
 		for (int i = 0; i < 9 ; i++)
 		{
 			for (int j = 0; j < 9 ; j++)
 			{
 				Converter.CartesianConverter( j , i , (a, b) -> Cells[a][b])
-						.setText(String.valueOf(r.cellReceiver(j,i).getValue()));
+						.setText(String.valueOf(r.receiver(j,i)));
 				Cells[i][j].setDisable(true);
 			}
 		}

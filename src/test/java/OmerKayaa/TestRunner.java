@@ -15,6 +15,7 @@ public class TestRunner {
 		
 		tests.add ( JUnitCore.runClasses ( StaticMethodTester.class ) );
 		tests.add ( JUnitCore.runClasses ( SudokuSolutionTester.class ) );
+		tests.add ( JUnitCore.runClasses (	ContainerTester.class ) );
 		
 		tests.forEach ( TestRunner::printResult );
 		

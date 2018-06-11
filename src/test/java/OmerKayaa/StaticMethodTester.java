@@ -28,5 +28,5 @@ public class StaticMethodTester
         assertTrue ( Converter.ContainerConverter ( 6,3 , ( x , y ) -> x==0&&y==7 ) );
         System.out.println ( "Test Passed" );
     }
-    
+
 }
